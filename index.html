@@ -1,13 +1,596 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>myapp</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hokkaido Alpine &amp; Flora | Itinerary Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-effect {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; }
+            .sidebar-scroll { position: static; height: auto; }
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .filter-active { @apply bg-tertiary text-on-tertiary !border-tertiary shadow-md; }
+        
+        /* Smooth page transitions */
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#24005b",
+                        "surface-container": "#ebeef0",
+                        "surface-bright": "#f7fafc",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#a5c8ff",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f1f4f6",
+                        "tertiary-container": "#1a5c3f",
+                        "on-background": "#181c1e",
+                        "outline": "#737780",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e0e3e5",
+                        "surface": "#f7fafc",
+                        "on-surface-variant": "#43474f",
+                        "on-primary-fixed-variant": "#204877",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#93d4af",
+                        "inverse-on-surface": "#eef1f3",
+                        "error": "#ba1a1a",
+                        "on-surface": "#181c1e",
+                        "primary": "#0e3b69",
+                        "outline-variant": "#c3c6d0",
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary-container": "#a882ff",
+                        "on-primary-container": "#a2c6fd",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary-fixed-variant": "#5429a6",
+                        "surface-dim": "#d7dadc",
+                        "primary-fixed": "#d4e3ff",
+                        "secondary-fixed-dim": "#d1bcff",
+                        "secondary": "#6c45c0",
+                        "tertiary": "#00442a",
+                        "on-primary-fixed": "#001c3a",
+                        "on-tertiary-fixed": "#002112",
+                        "primary-container": "#2c5282",
+                        "on-secondary-container": "#3d0190",
+                        "on-tertiary-container": "#91d2ad",
+                        "surface-container-high": "#e5e9eb",
+                        "surface-tint": "#3b6090",
+                        "background": "#f7fafc",
+                        "tertiary-fixed": "#aff1ca",
+                        "secondary-fixed": "#eaddff",
+                        "on-tertiary-fixed-variant": "#0a5135",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#a5c8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding-desktop": "48px",
+                        "section-gap": "64px",
+                        "container-padding-mobile": "20px",
+                        "base": "8px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding-desktop h-20 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl shadow-sm no-print">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="landscape">landscape</span>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">Hokkaido Alpine &amp; Flora</h1>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<nav class="flex gap-6">
+<a class="text-primary font-bold border-b-2 border-primary font-label-md text-label-md" href="#">Itinerary</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Map</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Gallery</a>
+</nav>
+<button class="flex items-center gap-2 bg-primary text-on-primary px-6 py-2.5 rounded-lg font-label-md text-label-md hover:opacity-90 transition-all active:scale-95" onclick="window.print()">
+<span class="material-symbols-outlined text-[20px]" data-icon="picture_as_pdf">picture_as_pdf</span>
+                Print to PDF
+            </button>
+</div>
+</header>
+<main class="pt-28 pb-12 px-container-padding-mobile md:px-container-padding-desktop max-w-[1440px] mx-auto">
+<!-- Day Selector -->
+<section class="mb-10 no-print">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">May 2026 Journey</h2>
+<span class="text-on-surface-variant font-label-md text-label-md uppercase tracking-widest">Spring Season</span>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-4 hide-scrollbar" id="day-tabs-container">
+<!-- Tabs injected by JS -->
+</div>
+</section>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Activities -->
+<div class="lg:col-span-8">
+<!-- Master Filter Bar -->
+<div class="flex flex-wrap items-center gap-3 mb-8 no-print bg-surface-container-low/50 p-4 rounded-xl border border-outline-variant/20">
+<span class="font-label-md text-label-md text-on-surface-variant mr-2">EXPLORE BY:</span>
+<button class="filter-pill filter-active px-5 py-2 rounded-full border border-outline-variant text-label-md font-label-md transition-all" id="filter-all" onclick="filterActivities('all')">✨ All</button>
+<button class="filter-pill px-5 py-2 rounded-full border border-outline-variant text-label-md font-label-md hover:bg-surface-variant/50 transition-all flex items-center gap-2" onclick="filterActivities('Sightseeing')">🏔️ Sightseeing</button>
+<button class="filter-pill px-5 py-2 rounded-full border border-outline-variant text-label-md font-label-md hover:bg-surface-variant/50 transition-all flex items-center gap-2" onclick="filterActivities('Food')">🍣 Food</button>
+<button class="filter-pill px-5 py-2 rounded-full border border-outline-variant text-label-md font-label-md hover:bg-surface-variant/50 transition-all flex items-center gap-2" onclick="filterActivities('Shopping')">🛍️ Shopping</button>
+<button class="filter-pill px-5 py-2 rounded-full border border-outline-variant text-label-md font-label-md hover:bg-surface-variant/50 transition-all flex items-center gap-2" onclick="filterActivities('Logistics')">🚗 Logistics</button>
+</div>
+<!-- Activity Cards Container -->
+<div class="space-y-12" id="activity-list">
+<!-- Cards injected by JS -->
+</div>
+</div>
+<!-- Right Column: Sidebar -->
+<aside class="lg:col-span-4">
+<div class="sticky top-28 space-y-6">
+<!-- Logistics Panel -->
+<div class="bg-surface-container-low p-8 rounded-xl border border-outline-variant/30 shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+<h3 class="font-headline-md text-headline-md text-primary">Logistics</h3>
+</div>
+<div class="space-y-8" id="logistics-content">
+<!-- Updates dynamically via JS -->
+</div>
+</div>
+<!-- Visual Accent Card -->
+<div class="relative h-48 rounded-xl overflow-hidden shadow-sm group">
+<img alt="Hokkaido Landscape" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIv6Oy0vSZSuD5VhF1QQTSlaXbL_dAmeKFDWZ5IuDMVvpNteOkRJ2IPSP3AqOvmuL9_e3mZa_IveMggT7luJHeG0DJYlWAjdfTK9KVKREFe0kbIXNfFx5JEZebi3Xd_eZFGwKmEotpGVOSrC5L0A0rT15Yuu2oGbioWabe8FDuG0lelKWFfKTMHEv_7TjJoLj5_7DTUtcVplEKf3wzpUPKqLBisoT3Iw3J-UlzEYmvfSV-Xi8nijKBTqfZF6np5BDMtgK0FyoqBzU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+<p class="text-white font-headline-md text-headline-md">Explore the Peak</p>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-8 px-container-padding-desktop flex flex-col md:flex-row justify-between items-center mt-section-gap border-t border-outline-variant/20 bg-surface-container-lowest no-print">
+<div class="mb-4 md:mb-0">
+<span class="font-label-md text-label-md font-bold text-primary">Hokkaido Alpine &amp; Flora</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">© 2024 Hokkaido Alpine &amp; Flora Guide. All rights reserved.</p>
+</div>
+<div class="flex gap-6">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+<script>
+        const itineraryData = [
+            {
+                day: 1,
+                date: "May 24",
+                location: "Otaru",
+                sleep: "Hotel Nord Otaru",
+                weather: "10°C (50°F). Cool evening, breezy.",
+                activities: [
+                    { time: "06:00 PM", title: "Arrival in Hokkaido", category: "Logistics", desc: "Arrive at New Chitose Airport and pick up rental car. Essential start for the alpine journey.", icon: "flight_land" },
+                    { time: "07:30 PM", title: "Hotel Nord Otaru Check-in", category: "Logistics", desc: "Check into the historic canal-side hotel with classic European architecture.", icon: "hotel" },
+                    { time: "08:30 PM", title: "Night Canal Walk", category: "Sightseeing", desc: "Stroll along the illuminated Otaru Canal. Perfect for photography with historical brick warehouses reflected in the water.", icon: "nightlight", gear: "Medium-weight jacket or light down vest", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDRBaehCMYIl93qx5oqyKcKGvEtIjf8Hxp0pFVs-AgvLaWKZPKj_rxwp_6pE68ZxLqvos50bz5nduRuyLrEFIhEDt9vnFot6JeN_obC_8WzdeC2_PAS4qXTUpCjyEEvUUx20hiFmbXVBY4R7VBrzvb5FzivBiHq0FmIaySO91ZdiEzKisl5pdvOeeugNJnU0VN7o_mKQCdXCV-rGZgqPZFNuLL0alIBZN3JcViDLWNqt7hQW8xt46IEc1JF82yXumzOFXqjdQIfJhA" }
+                ]
+            },
+            {
+                day: 2,
+                date: "May 25",
+                location: "Otaru / Sapporo",
+                sleep: "Sapporo Hotel",
+                weather: "16°C (61°F). High wind chill.",
+                activities: [
+                    { time: "09:00 AM", title: "Sankaku Market Sushi", category: "Food", desc: "Fresh kaisendon breakfast at the triangle market. Seasonal seafood at its peak.", icon: "restaurant", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBKhY7L4rIZUj0eFzXwUGelAQmYnbR0mLO83Jpiqw2qa6aFS-VhfDq4Aq6HhwqYXh2EThHxwfu8G9nwgBN2-l-yT5CluYX-Rv4-Gx7BAHRMBYtq7xS4_7X2whF196NMDEJuHnddPOZIIEP71Zt8sJ6nW6GO7HIw1Rpop39m_CM-zZz0-8Z26YIc5tdwq3NMIlF6xohf_Y52Rke8DC895Pqa8-I-oZVX8Bw-ZOvvpvTh3ph1RMCZlte0ZZcq59C0iIHkhMtR4UcLBq0" },
+                    { time: "11:00 AM", title: "Blue Cave Tour", category: "Sightseeing", desc: "Power boat tour of the mystic Otaru blue caves. Brilliant turquoise waters await.", url: "https://www.ryugu-cruise.com/en/", icon: "sailing", gear: "Windbreaker/Waterproof shell required. Sneakers with grip", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCpq1LC-0t9wzZfiMcvJwwHqbEG3MC5E_ikspgu0SjJskKt9DMt2mLem3u0-tDEIDH1bsBdFNVlOXb-xXI6DeuuG2sqg49SAHBoOFMDxD97NYcE0F-eWGS_2Bi84iVK6XYIzdd9cgcPdwf40Q0F9JKP8B-Ry7SD2XUc_HxyDTz1SMTgythc1AF_4WBdt5ppoGrUjm48h2kufB8H-uhJquLJtoIfqGwrvCAupiWCBzq8qxCLGRcqKBVSqyp5KB33kUvdYgmgVkOxL-o" },
+                    { time: "03:00 PM", title: "Mt. Tengu Ropeway", category: "Sightseeing", desc: "City views and chipmunk park visit. Panoramic landscape of the harbor.", url: "https://tenguyama.ckk.chuo-bus.co.jp/en/", icon: "landscape", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuD_4RE3t6YdBRjZ-hzNFIFMEX1dH2sM13accFoO28X5tXJveoHnw2UyBN6d1bWnEwIQC2_jfPZkgbww_53Th0Bg3lLXGHLTkRRPW6HgNTGn_XUqnNgegiWZnUojF6xOAqmEEGKXRXaegTLHml7u4WDuNHgXWy9qSiNtdPyp0-XkOXcYe_Dan3yvXAcVlf360Vnp828Vi94hF8pXonxPHSqBj7DIzzoE9Hv6r7DrVPi4A27FOu8jNGCS2YUGc9HngGSvxA02BZ_7lmY" },
+                    { time: "07:00 PM", title: "Drive to Sapporo", category: "Logistics", desc: "Evening drive to the vibrant capital city.", icon: "directions_car" }
+                ]
+            },
+            {
+                day: 3,
+                date: "May 26",
+                location: "Sapporo",
+                sleep: "Sapporo Hotel",
+                weather: "19°C (66°F). Sunny.",
+                activities: [
+                    { time: "10:00 AM", title: "Sapporo TV Tower", category: "Sightseeing", desc: "Panoramic views of Odori Park and the city layout.", url: "https://www.tv-tower.co.jp/en/", icon: "tower", gear: "City casual. Light layers for indoor malls", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCe2eUoLOb0ykP1lXPeQON1xubCVuwnEq--8b-GON1nAt_EsAXWdM4jHyr0dfHjZiRYKQsqHPpJPLmMzE61QscINZurOlc27q00I4ef9IGbCHES0pldP_RvWZXzhMKUCxN_zUC7EhbRbo4kL8qOiuY732F374CQzJD5ccbX8NfwV5HvftEJuYM5DhhYzOZRf6RgMcFEDyP2HkRez-Dm8CxXOvZY7xu1Gs7M-_dyDmZ2OB9ltpOUIQFpe8vXB6AOhu9RWVMctZVSzjk" },
+                    { time: "12:00 PM", title: "Nijo Market Sushi", category: "Food", desc: "Local market lunch specializing in seasonal Hokkaido treasures.", icon: "flatware", gear: "City casual" },
+                    { time: "03:00 PM", title: "Tanukikoji Shopping", category: "Shopping", desc: "Explore the historic 1km-long shopping arcade. Great for local souvenirs.", icon: "shopping_bag", gear: "City casual" },
+                    { time: "07:00 PM", title: "Ishizaki Wagyu Dinner", category: "Food", desc: "Premium A5 Wagyu dining experience with master chefs.", url: "https://savorjapan.com/0006037145/", icon: "outdoor_grill", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuA8GKuu41jsjr75VMaxTVI2nKF2nM7QFnZcF2P4pvx3YQsJf2Uft64Osd2ljPTj98XFN9Wz4j6rdkEuSVWbFuC17RcNYHA2Dw4PNsSVkRK6DjfhxawS_zkK4Ncg6BrC5VOCnGoCM5CHEp6cQ07H99KAA7N_sfXwC4y4YC8MHkGDetcrTaONB6QVa8UjMhgZGVkqD2fYMp3KrKFUVI3cnJhAxeePft8l0TuWWCwQuTm8-0QVE0y_y35Vu_uTsOxX-UMf4YCHhrXzuug" }
+                ]
+            },
+            {
+                day: 4,
+                date: "May 27",
+                location: "Furano / Biei",
+                sleep: "Sapporo Hotel",
+                weather: "18°C (64°F). Mountain rain possible.",
+                activities: [
+                    { time: "08:30 AM", title: "Furano & Biei Day Tour", category: "Sightseeing", desc: "Seeing flower fields at Shikisai-no-oka with rolling hills of color.", url: "https://www.klook.com/en-US/activity/2126-furano-biei-shiki-no-oka-hokkaido/", icon: "filter_hdr", gear: "Umbrella/Raincoat. Sturdy walking shoes", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCYfwAgJ3AmdwVd3JWEDRO40zHAVbLXApI7fD9bDHTP8wCKyShbjKeyFxSxCmFTQwzj4WqdM71VdANvws28XmXn9YkkQAki44mCDhMuqOVYfUlHTwGWwysLnCF29Nde4DGPMvyTd5THb38LP0x0o7SYNx_iAXCKwXiuWqWUw7eOnyHiYpMNQMKEEbD4Qe612OT74MttP8nmuNSHx7NbMUnP9yhiWJc-XnOic8hVzulT08lrhOxbXO6pIqYmafLJ2xNniiRnshbJARA" },
+                    { time: "11:00 AM", title: "Blue Pond (Aoiike)", category: "Sightseeing", desc: "The surreal milky blue water and silver birch trees of Biei.", icon: "water_lux", gear: "Sturdy walking shoes", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuA5O4VBLcVceeVxMg-MoWjlk8gC6SCOydEBFx40m2zb_bnbcc--nsdseYaSbqua7QZOo_nMP_bir5SiWV45Tjmq2wYRS_U6Ss5gPEeeuuz6mmvxGHkru4XuyCXqJp9LFWiJknZq8YqvFGkw8RzKJCZHChiu9-d1VTwmvaPzPFiHx_3mZ5faCHGEA75vkB81eN0gywGMcMEgq8ryuuTp_U4zA_0FrzqeZc3PTq_PDPqZwJtSexIJrjJ0EMtsyD5WhqdXRSrGo2SXz-s" },
+                    { time: "01:00 PM", title: "Asahiyama Zoo Option", category: "Sightseeing", desc: "Famous polar bear and penguin exhibits in unique habitats.", url: "https://www.city.asahikawa.hokkaido.jp/asahiyamazoo/", icon: "pets" },
+                    { time: "07:30 PM", title: "NanKouEn Wagyu", category: "Food", desc: "Yakiniku night in Susukino. Sizzling local cuts.", url: "https://www.klook.com/en-US/activity/20120-nankouen-okura-yakiniku-sapporo/", icon: "fireplace" }
+                ]
+            },
+            {
+                day: 5,
+                date: "May 28",
+                location: "Jozankei",
+                sleep: "Jozankei Ryokan",
+                weather: "17°C (63°F). Breezy.",
+                activities: [
+                    { time: "10:00 AM", title: "Moerenuma Park", category: "Sightseeing", desc: "Large-scale sculpture park designed by Isamu Noguchi. Features the iconic Glass Pyramid.", icon: "park", gear: "Wind-resistant jacket", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBIj55AjoUOc5qSs97kvr311jpXh2tzFB6cSs96pcDfJiYD0DeFx52AtK648WnFTPsGOKE76jW4WTTRI696Pa-bY1YxSNInpU21kT4-sF8LmhywB-5j5GZuVxrW27zaYmmD6ww1TMmEQV8HrOGPH9ruPQ0VbrzQVkmgsN4_lYk9Fw1IKZ9BBVGBstMqPVYQUGRhj66Iy12kvkS-J8EoMNXrU4mO2u0_GBy_i5wXAQU0A5x5g3DASQJkZ0ojrEhBRd4OT7blxgRnA4I" },
+                    { time: "01:00 PM", title: "Shiroi Koibito Park", category: "Shopping", desc: "Chocolate factory tour and fairytale architecture.", url: "https://www.shiroikoibitopark.jp/en/", icon: "bakery_dining", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBB3-pYSY-JmsIh-rK8GfwlimEkbYSZgbbdpD71DnuMeMU3opsZ_DM4Bj3G11rPICyctMoFHNGFbQ3BpmViobS8ey1GLoNCBzsLyvRu-lqSsD6mPKdHwPFS5ZtDYD6nMiZVIGWL9M4T7xC9wD_VNOfh_x9Ha2lctfXuwNXO0w6iZz4FVfOGhQquppHitrmTpOMAsnE3afNNjYbC08BP-DWLGe0qf1lIB8z4fjibbrgKwARAKllxZhKX3O5NYib2ZNrlCEK8YYrwn_w" },
+                    { time: "06:00 PM", title: "Ryokan Check-in", category: "Logistics", desc: "Traditional Japanese inn arrival in the Onsen town. Forest views from your room.", icon: "spa", gear: "Slip-on shoes for the Ryokan", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDxHFs0hLl16zbdXCfswjimTkTgLsmL01C1vAT3l3jEo1Vk-XG-DTwwt3bbWK_qSTupTCgFdDbxqeAwywugrR1s5KaFsg53eVWO6MEObo4YS-l1WlgSjJ7pfUcob_gIv3eD5YeCZGnLEOv5c8wvpNbEOIoUst7lXqgdKMsCbGKdywMGLcHghT1PyKF6N5NSwguUNe6yao3amN5mdJDRg-NfL7e4QMFZ58JpuwEyC_Nu7v3eQkkUVDwimGTEtdht7HXCWwwfGFVYago" },
+                    { time: "07:30 PM", title: "Wagyu Kaiseki Dinner", category: "Food", desc: "Multi-course traditional dinner with Zen aesthetic.", icon: "local_dining" }
+                ]
+            },
+            {
+                day: 6,
+                date: "May 29",
+                location: "Lake Toya / Chitose",
+                sleep: "Chitose Hotel",
+                weather: "15°C (59°F). Colder at summit.",
+                activities: [
+                    { time: "10:00 AM", title: "Mt. Usu Ropeway", category: "Sightseeing", desc: "Active volcano views. Gear: Hiking Boots.", url: "https://usuzan.hokkaido.jp/en/", icon: "hiking", gear: "Hiking Boots Required. Thermal fleece layer", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCkc1YLFi6LerS9184D1xRZBpm1W9FWrVNZHMhCgwCXFzV6SymAiN0F7NlFSxAz3f1SD4RnvOi0d5fAlixrKWscNwcPiimJqbu_Lf8R-1-aL2Ls8JTz8sdVmAYKOFsZZChDVvDuCye3BUEC6BJxR_QY7O6HIbtmHaRc22gxkOE2N-XQtVgONrQOjpcNn11esjKq6HGs1nEXp-5MuVmVu5oJYDXpIPANB8bqjefGHx2cYvc2P4TzZwNXGMiszFBdHUdgWotJoD7vYM8" },
+                    { time: "12:30 PM", title: "Sendouan Wagyu", category: "Food", desc: "Lakefront dining featuring Hokkaido beef and panoramic views.", url: "https://www.wakasaimo.com/shop/sendouan/", icon: "water" },
+                    { time: "03:30 PM", title: "Lake Shikotsu", category: "Sightseeing", desc: "Crystal clear caldera lake visit. Serene nature at its best.", icon: "waves", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDAMIfo4opo91D9WxkhtUH-JanqwrxrkGK21F4lPQrVf1wXmQZ5oKDApuur8QDdz2gWdRj2Q4hK892--TvfJNGw6lsjqcq7Z3ocl0d1ERENG0gC0lKOI9VgwjI_uiRy2d-clxG22zobQZcoW3bwmEsY7j2J3cNxWfhzzDCJjhpRXw5fgOekcY0uyqONApj5aGRMpFOaQC7SUMf7k6ViTo8VbmnFbih-TBdBFtFHOxhry3cZFYzjLkvqZUS1SoZ2ZV83G-xX63WUxoU" }
+                ]
+            },
+            {
+                day: 7,
+                date: "May 30",
+                location: "Departure",
+                sleep: "Home",
+                weather: "20°C (68°F). Mild.",
+                activities: [
+                    { time: "11:00 AM", title: "Aeon Mall Chitose", category: "Shopping", desc: "Last-minute souvenir shopping for local snacks and goods.", icon: "mall", gear: "Comfortable flight layers", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB0in_1cI3xhT4Qn_Gmpw-ydlJLEH1S71A3JKVNbyYzbggyNa2P9zw8c_o3qBBYEVeZ3_um2OB3lW-q_T8-wb0CUB-yayA1cgl_Em9Rq4KNxFzekcd69x0gR9iYdgzOH3C4BXtr-zH_pAnDDYfgNxRdKgzmIWzD8WfCliTRptrQ9CgpIa55G3fMo6rAg6oHYA-h2-KZ5bLUpV3YVSHEzPk7TBd73G8M9X2oGcC8NqColNAqvwsN2kLMOjtnjaHW71TKVUBc3x610Qk" },
+                    { time: "01:00 PM", title: "Royce' Chocolate World", category: "Food", desc: "The whimsical world of chocolate at the airport. Watch the machines in action.", icon: "cookie", gear: "Comfortable flight layers", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDJkVmUZxwoCq_xIlJdnBk7E6OSRCdtYDLdIeEUlG2jF1LFrflu7ga-h-h3DJUbBMpjtOSg_kNPvFakdq9YYeGUugT8hUSrewzv2X2QO_OEUWCKxdr2TiJrcB1ZVIIUHuiXFjWltRWmXBkzRxvT90YeROZEp9qWEntwV9AfsvM_NnDPVSA-rm-JJ-K5ZIPUI6NvosuEeDdg85vD1NWLZs-Y0n-TE2O_amJDPE0VFHTAg2fRGUrnUi6t0MTO-t_CbcjKRxWGf59UJwI" },
+                    { time: "07:00 PM", title: "Flight Departure", category: "Logistics", desc: "Evening flight back home. End of journey.", icon: "flight_takeoff", gear: "Comfortable flight layers" }
+                ]
+            }
+        ];
+
+        let currentDay = 'all';
+        let currentFilter = 'all';
+
+        function init() {
+            renderTabs();
+            renderActivities();
+            updateSidebar();
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('day-tabs-container');
+            const allTab = `
+                <button onclick="setDay('all')" class="flex-shrink-0 px-6 py-4 rounded-xl border border-outline-variant/30 text-left transition-all ${currentDay === 'all' ? 'bg-primary text-on-primary ring-4 ring-primary/10 border-primary' : 'bg-surface hover:bg-surface-variant/50'}">
+                    <div class="font-label-sm text-label-sm opacity-70 uppercase">Overview</div>
+                    <div class="font-bold text-lg">Whole Trip</div>
+                    <div class="text-xs truncate max-w-[80px]">7 Days</div>
+                </button>
+            `;
+            
+            const dayTabs = itineraryData.map(d => `
+                <button onclick="setDay(${d.day})" class="flex-shrink-0 px-6 py-4 rounded-xl border border-outline-variant/30 text-left transition-all ${currentDay === d.day ? 'bg-primary text-on-primary ring-4 ring-primary/10 border-primary' : 'bg-surface hover:bg-surface-variant/50'}">
+                    <div class="font-label-sm text-label-sm opacity-70 uppercase">Day ${d.day}</div>
+                    <div class="font-bold text-lg">${d.date}</div>
+                    <div class="text-xs truncate max-w-[80px]">${d.location}</div>
+                </button>
+            `).join('');
+
+            container.innerHTML = allTab + dayTabs;
+        }
+
+        function setDay(day) {
+            currentDay = day;
+            renderTabs();
+            renderActivities();
+            updateSidebar();
+            
+            if (day !== 'all') {
+                const target = document.getElementById(`day-section-${day}`);
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 120,
+                        behavior: 'smooth'
+                    });
+                }
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function filterActivities(category) {
+            currentFilter = category;
+            
+            document.querySelectorAll('.filter-pill').forEach(btn => {
+                btn.classList.remove('filter-active');
+            });
+            
+            const categoryNames = {
+                'all': '✨ All',
+                'Sightseeing': '🏔️ Sightseeing',
+                'Food': '🍣 Food',
+                'Shopping': '🛍️ Shopping',
+                'Logistics': '🚗 Logistics'
+            };
+
+            const activeBtn = Array.from(document.querySelectorAll('.filter-pill')).find(b => b.innerText.includes(categoryNames[category]));
+            if (activeBtn) activeBtn.classList.add('filter-active');
+            
+            renderActivities();
+        }
+
+        function getActivityHtml(act, index) {
+            return `
+                <div class="activity-card group bg-surface-container-lowest overflow-hidden rounded-xl border border-outline-variant/20 hover:border-primary/30 transition-all hover:shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-300" style="animation-delay: ${index * 50}ms">
+                    <div class="flex flex-col md:flex-row h-full">
+                        ${act.img ? `
+                        <div class="md:w-1/3 relative h-48 md:h-auto overflow-hidden bg-surface-container">
+                            <img src="${act.img}" alt="${act.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                        </div>
+                        ` : ''}
+                        <div class="p-6 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider ${getCategoryStyles(act.category)}">
+                                            ${getCategoryEmoji(act.category)} ${act.category}
+                                        </span>
+                                        ${act.gear ? `
+                                        <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]" data-icon="apparel">apparel</span> ${act.gear}
+                                        </span>
+                                        ` : ''}
+                                    </div>
+                                    <span class="font-label-md text-label-md font-bold text-primary flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span> ${act.time}
+                                    </span>
+                                </div>
+                                <h4 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors mb-2">${act.title}</h4>
+                                <p class="text-on-surface-variant text-body-md line-clamp-3">${act.desc}</p>
+                            </div>
+                            
+                            <div class="mt-6 flex items-center justify-between">
+                                <div class="flex gap-3">
+                                    ${act.url ? `
+                                        <a href="${act.url}" target="_blank" class="flex items-center gap-2 text-primary font-label-md text-label-md hover:bg-primary/5 px-3 py-1.5 rounded-lg border border-primary/20 transition-all">
+                                            <span class="material-symbols-outlined text-[18px]" data-icon="language">language</span> Official Website
+                                        </a>
+                                    ` : ''}
+                                </div>
+                                <div class="flex items-center gap-4 text-on-surface-variant/40">
+                                    <span class="material-symbols-outlined hover:text-tertiary transition-colors cursor-help" title="Weather: Sunny">sunny</span>
+                                    <span class="material-symbols-outlined hover:text-primary transition-colors cursor-help" title="Condition: Cool">ac_unit</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderActivities() {
+            const container = document.getElementById('activity-list');
+            let content = '';
+
+            const displayData = currentDay === 'all' ? itineraryData : [itineraryData.find(d => d.day === currentDay)];
+
+            displayData.forEach(dayData => {
+                const filteredActivities = currentFilter === 'all' 
+                    ? dayData.activities 
+                    : dayData.activities.filter(a => a.category === currentFilter);
+
+                if (filteredActivities.length > 0) {
+                    content += `
+                        <div id="day-section-${dayData.day}" class="fade-in-up">
+                            <div class="sticky top-20 bg-background/95 backdrop-blur z-20 py-4 flex items-center justify-between mb-6 border-b border-outline-variant/20">
+                                <div class="flex items-baseline gap-4">
+                                    <h3 class="font-headline-md text-headline-md text-primary">Day ${dayData.day}: ${dayData.date}</h3>
+                                    <span class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">${dayData.location}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-outline text-[20px]" data-icon="thermostat">thermostat</span>
+                                    <div class="text-right">
+                                        <div class="text-sm font-semibold text-on-surface">${dayData.weather}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-6">
+                                ${filteredActivities.map((act, idx) => getActivityHtml(act, idx)).join('')}
+                            </div>
+                            <div class="mt-8 bg-surface-container-low/30 p-4 rounded-xl border border-dashed border-outline-variant/40 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 no-print">
+                                <div class="flex items-center gap-2 text-on-surface-variant text-sm font-medium">
+                                    <span class="material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span> Daily Progress
+                                </div>
+                                <div class="flex items-center gap-2 text-on-surface-variant text-sm font-medium">
+                                    <span class="material-symbols-outlined text-[18px]" data-icon="apparel">apparel</span> 
+                                    Daily Wear: ${dayData.day === 6 ? 'Hiking Boots Required' : (dayData.day === 7 ? 'Comfortable Flight Layers' : 'City Casual & Light Layers')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            container.innerHTML = content || `
+                <div class="py-20 text-center border-2 border-dashed border-outline-variant rounded-xl fade-in-up">
+                    <span class="material-symbols-outlined text-outline-variant text-5xl mb-4" data-icon="search_off">search_off</span>
+                    <p class="text-on-surface-variant font-body-lg">No matching activities found for the selected filter.</p>
+                </div>
+            `;
+        }
+
+        function updateSidebar() {
+            const logisticsContainer = document.getElementById('logistics-content');
+            
+            if (currentDay === 'all') {
+                const uniqueHotels = [...new Set(itineraryData.map(d => d.sleep))];
+                logisticsContainer.innerHTML = `
+                    <div>
+                        <label class="font-label-md text-label-md text-on-surface-variant block mb-4 uppercase tracking-tighter">TRIP ACCOMMODATIONS</label>
+                        <div class="space-y-4">
+                            ${uniqueHotels.map(hotel => `
+                                <div class="flex items-start gap-4 p-4 bg-surface-bright rounded-lg border border-outline-variant/20 shadow-sm transition-transform hover:-translate-y-1">
+                                    <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container shrink-0">
+                                        <span class="material-symbols-outlined text-[20px]" data-icon="bed">bed</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-body-md font-semibold text-on-surface">${hotel}</p>
+                                        <p class="text-on-surface-variant text-xs">${hotel === 'Home' ? 'Return Trip' : 'Confirmed Booking'}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="pt-6 border-t border-outline-variant/30">
+                        <label class="font-label-md text-label-md text-on-surface-variant block mb-4 uppercase tracking-tighter">GENERAL INFO</label>
+                        <div class="bg-surface-bright p-5 rounded-lg border border-outline-variant/20 space-y-4 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-2 text-sm font-medium">
+                                    <span class="material-symbols-outlined text-on-surface-variant text-[18px]" data-icon="credit_card">credit_card</span> ETC Card
+                                </span>
+                                <span class="text-tertiary font-bold text-[10px] bg-tertiary-fixed px-2 py-0.5 rounded uppercase tracking-wider">Required</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-2 text-sm font-medium">
+                                    <span class="material-symbols-outlined text-on-surface-variant text-[18px]" data-icon="event_repeat">event_repeat</span> Daily Start
+                                </span>
+                                <span class="text-on-surface font-semibold text-sm">9:00 AM Sharp</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-2 text-sm font-medium">
+                                    <span class="material-symbols-outlined text-on-surface-variant text-[18px]" data-icon="calendar_month">calendar_month</span> Duration
+                                </span>
+                                <span class="text-on-surface font-semibold text-sm">7 Days Total</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="w-full py-4 bg-secondary text-on-secondary rounded-lg font-label-md text-label-md hover:opacity-90 hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 no-print">
+                        <span class="material-symbols-outlined text-[20px]" data-icon="edit_note">edit_note</span> Add Trip Note
+                    </button>
+                `;
+            } else {
+                const dayData = itineraryData.find(d => d.day === currentDay);
+                logisticsContainer.innerHTML = `
+                    <div class="fade-in-up">
+                        <label class="font-label-md text-label-md text-on-surface-variant block mb-3 uppercase tracking-tighter">WHERE TO SLEEP (DAY ${dayData.day})</label>
+                        <div class="flex items-start gap-4 p-5 bg-surface-bright rounded-lg border border-outline-variant/30 shadow-sm">
+                            <div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+                                <span class="material-symbols-outlined text-[24px]" data-icon="bed">bed</span>
+                            </div>
+                            <div>
+                                <p class="font-body-lg text-body-lg font-semibold text-on-surface">${dayData.sleep}</p>
+                                <p class="text-on-surface-variant text-sm">Confirmed Reservation</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fade-in-up">
+                        <label class="font-label-md text-label-md text-on-surface-variant block mb-3 uppercase tracking-tighter">WEATHER & CLOTHING</label>
+                        <div class="flex flex-col gap-3 p-4 bg-tertiary-fixed/20 rounded-lg border border-tertiary/10">
+                            <div class="flex items-center gap-4">
+                                <span class="material-symbols-outlined text-tertiary text-[24px]" data-icon="wb_sunny">wb_sunny</span>
+                                <span class="font-body-md text-body-md font-semibold text-tertiary">${dayData.weather}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-6 border-t border-outline-variant/30 fade-in-up">
+                        <label class="font-label-md text-label-md text-on-surface-variant block mb-4 uppercase tracking-tighter">CAR & TRANSPORT</label>
+                        <div class="bg-surface-bright p-5 rounded-lg border border-outline-variant/20 space-y-4 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-2 text-sm font-medium">
+                                    <span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="credit_card">credit_card</span> ETC Card
+                                </span>
+                                <span class="text-tertiary font-bold text-[10px] bg-tertiary-fixed px-2 py-0.5 rounded uppercase tracking-wider">REQUIRED</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-2 text-sm font-medium">
+                                    <span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="event_available">event_available</span> Daily Start
+                                </span>
+                                <span class="text-on-surface font-semibold text-sm">9:00 AM</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="w-full py-4 bg-secondary text-on-secondary rounded-lg font-label-md text-label-md hover:opacity-90 hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 no-print">
+                        <span class="material-symbols-outlined text-[20px]" data-icon="edit_note">edit_note</span> Add Trip Note
+                    </button>
+                `;
+            }
+        }
+
+        function getCategoryStyles(cat) {
+            switch(cat) {
+                case 'Sightseeing': return 'bg-primary-fixed text-on-primary-fixed-variant';
+                case 'Food': return 'bg-tertiary-fixed text-on-tertiary-fixed-variant';
+                case 'Shopping': return 'bg-secondary-fixed text-on-secondary-fixed-variant';
+                case 'Logistics': return 'bg-surface-variant text-on-surface-variant';
+                default: return 'bg-surface-variant text-on-surface-variant';
+            }
+        }
+
+        function getCategoryEmoji(cat) {
+            switch(cat) {
+                case 'Sightseeing': return '🏔️';
+                case 'Food': return '🍣';
+                case 'Shopping': return '🛍️';
+                case 'Logistics': return '🚗';
+                default: return '✨';
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body></html>
